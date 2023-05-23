@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import json
+import yaml
 import openai
 from dotenv import load_dotenv
 from langchain.vectorstores import DeepLake
@@ -32,6 +33,12 @@ vectorstore = FAISS(embedding_fn, index, InMemoryDocstore({}), {})
 retriever = vectorstore.as_retriever(search_kwargs=dict(k=1))
 memory = VectorStoreRetrieverMemory(retriever=retriever)
 
+def load_params():
+    with open("params.yml", 'r') as file:
+        params = yaml.safe_load(file)
+    return params
+params = load_params()
+
 def load_context_from_json():
     with open('response_history.json', 'r') as file:
         context_data = json.load(file)
@@ -47,7 +54,7 @@ for context in context_data:
         vote = judge_response["vote"]
         response_text = judge_response["response_text"]
 
-        input_dict = {"input": platform_submission}
+        input_dict = {"input": f"your platform: {platform_submission}"}
         output_dict = {"output": f"judge name {judge_name}: vote {vote}: response {response_text}"}
         memory.save_context(input_dict, output_dict)
 
@@ -72,6 +79,7 @@ conversation_with_summary = ConversationChain(
     memory=memory,
     verbose=True
 )
+
 def append_to_json(response: str):
     with open('response_history.json', 'r+') as file:
         data = json.load(file)
@@ -92,7 +100,7 @@ def append_to_json(response: str):
         json.dump(data, file, indent=4)
 
 def main():
-    res = conversation_with_summary.predict(input="Write a presidential platform based on what you know about the judges and your platforms so far")
+    res = conversation_with_summary.predict(input="Write a presidential platform based on what you know about the judges and your platforms so far.  If the previous platform was popular and got more than four yes votes you don't need to change anything")
     print(res)
     append_to_json(res)
 

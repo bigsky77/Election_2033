@@ -1,0 +1,23 @@
+judges:
+  - name: Elon Musk
+    traits:
+      - Innovation
+      - Space Exploration
+      - Clean Energy
+  - name: Goldfish
+    traits:
+      - Water Conservation
+      - Animal Rights
+  - name: Girl
+    traits:
+      - Education
+      - Environmental Sustainability
+  - name: Snoop Dog
+    traits:
+      - Music
+      - Cannabis Legalization
+      - Weed
+  - name: Super-AI
+    traits:
+      - Technology
+      - AI Ethics
